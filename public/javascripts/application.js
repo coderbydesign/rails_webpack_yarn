@@ -68,8 +68,9 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //
