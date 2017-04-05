@@ -8,10 +8,11 @@ const CSSOutputTemplate = prod ? 'stylesheets/[name]-[hash].css' : 'stylesheets/
 const JSOutputTemplate = prod ? 'javascripts/[name]-[hash].js' : 'javascripts/[name].js';
 
 module.exports = {
-  context: __dirname + '/app/assets/javascripts',
+  context: __dirname + '/app/assets',
 
   entry: {
-    application: './application.js'
+    application: ['./javascripts/application.js', './stylesheets/application.css'],
+    some_feature: ['./javascripts/some_feature.js', './stylesheets/some_feature.scss']
   },
 
   output: {
@@ -30,7 +31,10 @@ module.exports = {
         }
       }, {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("css!sass")
+        loader: ExtractTextPlugin.extract("css-loader!sass-loader")
+      }, {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract("css-loader!sass-loader")
       }
     ]
   },
@@ -40,6 +44,27 @@ module.exports = {
       this.plugin('done', function(stats) {
         let output = "ASSET_FINGERPRINT = \"" + stats.hash + "\""
         fs.writeFileSync('config/initializers/fingerprint.rb', output, 'utf8');
+      });
+    },
+    function() {
+      // delete old outputs
+      this.plugin('compile', function() {
+        let basePath = __dirname + '/public';
+        let paths = ['/javascripts', '/stylesheets'];
+
+        for (let x = 0; x < paths.length; x++) {
+          const assetPath = basePath + paths[x];
+
+          fs.readdir(assetPath, function(err, files) {
+            if (files === undefined) {
+              return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+              fs.unlinkSync(assetPath + '/' + files[i]);
+            }
+          });
+        }
       });
     }
   ]
