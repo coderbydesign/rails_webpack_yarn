@@ -6,3 +6,10 @@ A translation of the steps laid out in this article: http://pixelatedworks.com/a
 * Removes front-end gem dependencies
 * Updates asset configuration
 * Versions assets for production
+
+Local instructions:
+
+* brew install node
+* brew install yarn
+* yarn global add webpack
+* webpack
